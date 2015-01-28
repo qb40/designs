@@ -1,30 +1,36 @@
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-X	DESIGNS 2	       		   X
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+###################################
+##         DESIGNS 3.0           ##
+###################################
 
-This is a free software. You should however contact
-me if you want to change the program.
+FREEWARE:
+This program is a freeware which means that you may
+copy it, distribute it by any means freely. The author
+is not responsible for any damage caused by the use
+of this program on any device. If however any one wants
+to change the contents of the program, please contact
+the author.
 
-Designs 2 is a program that displays various types of
-designs. It is quite easy to use the program. Just
-use side arrow keys to goto previous or next choice,
-enter key to select, and escape key to exit.
+USAGE:
+This program is quite simple to use. All one has to do
+is to select a design of one's choice and then he will
+get to see the design in motion. To select design Left
+/Right arrow keys are to be used, Enter key to select
+a design, any key to exit from the design, and Esc key
+to quit the program.
+Shell command may also be used. Ex-
+DESIGNS3   23
+The above command will display design no. 23 and when
+a key is pressed, it will directly exit from the program.
 
-Designs 2 requires EMS, so if the program does not
-work, then activate the EMS. EMS can be activated
-in the following way:
+CONTENTS:
+Readme.txt, Designs 3.bas, Designs 3.exe
 
-Right Click > Properties > Memory > EMS > Set to Auto
-Also additionally, set XMS to Auto
+CONTACT:
+Developed by: Subhajit Sahu
+Mail Address: wolfram77@gmail.com
 
-That's all. If you have any better designs please mail
-them to me. I will wait for them.
-
+**********************************
 
 
 
-___________________
-{HAPPY QB}
-Subhajit Sahu
-wolfram77@gmail.com
--------------------
+END
