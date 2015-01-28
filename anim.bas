@@ -1,3 +1,5 @@
+'$INCLUDE: 'HZDlib.bi'
+
 DECLARE SUB dsg.model1 ()
 DECLARE SUB dsg.model2 ()
 DECLARE SUB dsg.model3 ()
@@ -55,6 +57,7 @@ DECLARE SUB ima.model18 ()
 DECLARE SUB ima.model19 ()
 DECLARE SUB ima.model20 ()
 
+DECLARE SUB support.setpalette ()
 DECLARE SUB support.bentline1 (x1%, y1%, x2%, y2%, clr%)
 
 'Declaring Keys
@@ -65,14 +68,27 @@ CONST insert = 82, home = 73, pageup = 71, del = 83, endk = 81, pagedn = 79
 CONST kf1 = 59, kf2 = 60, kf3 = 61, kf4 = 62, kf5 = 63, kf6 = 64, kf7 = 65, kf8 = 66, kf9 = 67, kf10 = 68, kf11 = 133, kf12 = 134
 'Keys declared
 
+CONST pi = 22 / 7, pi2 = 2 * pi
+CONST trig = 100000, trig2 = 360 / pi2
 
 
-
+DIM sine!(359), cosine!(359), tangent!(359)
 DIM sine&(359), cosine&(359)
+DIM log1!(320), log2!(1009)
 DIM Names$(55)
 FOR i% = 0 TO 359
-sine&(i%) = SIN((i% * (22 / 7)) / 180) * 100000
-cosine&(i%) = COS((i% * (22 / 7)) / 180) * 100000
+theta = (i% * pi) / 180
+sine!(i%) = SIN(theta)
+cosine!(i%) = COS(theta)
+tangent!(i%) = TAN(theta)
+sine&(i%) = sine!(i%) * trig
+cosine&(i%) = cosine!(i%) * trig
+NEXT
+FOR i% = 1 TO 319
+log1!(i%) = LOG(i%)
+NEXT
+FOR i% = 1 TO 1000
+log2!(i%) = LOG(i% / 100)
 NEXT
 FOR i% = 0 TO UBOUND(Names$)
 READ Names$(i%)
@@ -84,6 +100,7 @@ NEXT
 
 
 SCREEN 13
+HZDstart
 DO
 GOSUB men.menu
 SELECT CASE Selection%
@@ -205,17 +222,20 @@ LOOP
 
 
 men.menu:
-COLOR 7
-CLS
-PRINT "Random Colour Fun"
-PRINT "================="
+COLOR 64
+HZDclearPage
+HZDdisplayGraphics
+support.setpalette
 FOR i% = 0 TO 319 STEP 5
 support.bentline1 i%, 40, i% * SIN(i% * .01), 40 + SIN(i% * .01) * 10, SIN(i% * .01) * 255
 NEXT
+HZDdisplayGraphics
+PRINT "Random Colour Fun"
+PRINT "================="
 LINE (0, 70)-(319, 70), 1, B
 LINE (0, 80)-(319, 80), 1, B
 LOCATE 10, 1
-PRINT Names$(Selection%);
+PRINT Selection% + 1; " "; Names$(Selection%);
 k$ = ""
 DO UNTIL k$ = CHR$(enter) OR k$ = CHR$(esc)
         k$ = ""
@@ -229,14 +249,14 @@ IF (Selection% < 0) THEN Selection% = 55
 LOCATE 10, 1
 PRINT SPACE$(40);
 LOCATE 10, 1
-PRINT Names$(Selection%)
+PRINT Selection% + 1; " "; Names$(Selection%)
 CASE CHR$(0) + CHR$(right)
 Selection% = Selection% + 1
 IF (Selection% > 55) THEN Selection% = 0
 LOCATE 10, 1
 PRINT SPACE$(40);
 LOCATE 10, 1
-PRINT Names$(Selection%)
+PRINT Selection% + 1; " "; Names$(Selection%)
 CASE CHR$(esc)
 CLS
 PRINT "Wasn't that crazy?"
@@ -247,13 +267,15 @@ PRINT "Tried by: Subhajit Sahu(GamerZ)"
 PRINT "Mail: qbasic40@gmail.com"
 PRINT "Please mail me."
 k$ = INPUT$(1)
+HZDstop
 SYSTEM
 CASE CHR$(enter)
 LOCATE 10, 1
 COLOR 15
-PRINT Names$(Selection%)
+PRINT Selection% + 1; " "; Names$(Selection%)
 FOR i = -10000 TO 10000 STEP .005
 NEXT
+HZDclearPage
 CASE ELSE
 END SELECT
 LOOP
@@ -264,8 +286,8 @@ RETURN
 
 
 
-DATA "Farmland","Compression","Super Compression","Rise and Fall","Niagra 2","Look At Colours From A Dashing Plane"
-DATA "Look At Colours From A Dashing Plane 2","A Fall","Far Away","Blurry Guy","Above"
+DATA "Farmland","Compression","Super Compression","Rise and Fall","Niagra","Colours From A Dashing Plane"
+DATA "Colours From A Dashing Plane 2","A Fall","Far Away","Blurry Guy","Above"
 DATA "Lost Gravity Dust","Bee Dust","Striking Dust Form Sediment","Heavy Particle Sedimentation","Raindrops Form Ice","Rain On A Window Pane"
 DATA "Threads","Thread Fall","Sewed Wires","Drifting Wires","Drifting Wires 2","Octopus Flower","Circle Of Time"
 DATA "Dripple","Spread","Throw","Festival","Sprinkle Wave","Crackers","Diffused Band"
@@ -275,77 +297,89 @@ DATA "Line Tunnel","Dancing Pipe","Dancing Pipe 2","Dancing Pipe 3","Dancing Pip
 DATA "Dancing Pipe 6","Dancing Pipe 7","Sometimes A Pyramid","Colour Area","Way","Want","Want 2","Pillars","Pillars 2"
 
 SUB dsg.model1
+SHARED sine!(), cosine!()
 stp = 1
 DO
 k = k + stp
 FOR i% = 0 TO 319
 FOR j% = 0 TO 199
-PSET (i%, j%), CINT(SIN(i%) * COS(j%) * k)
+HZDpset i%, j%, SIN(i%) * COS(j%) * k
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 254) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model10
-SHARED sine&(), cosine&()
+SHARED sine!(), cosine!()
 stp& = 2
 DO
 k& = k& + stp&
 FOR i% = 1 TO 319
 FOR j% = 1 TO 199
-PSET (i%, j%), CINT((((((i% * cosine&(k&)) \ 100000) * sine&(k&)) \ 100000) * cosine&(k&)) \ 100000 + (j% * sine&(k&)) \ 100000)
+HZDpset i%, j%, i% * cosine!(k&) * sine!(k&) * cosine!(k&) + j% * sine!(k&)
 NEXT
 NEXT
+HZDdisplayGraphics
+HZDdisplayGraphics
 IF (k& > 357 OR k& < 2) THEN stp& = -stp&
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model11
+SHARED cosine!()
 stp = .1
 DO
 k = k + stp
 FOR i% = 0 TO 319
 FOR j% = 0 TO 199
-PSET (i%, j%), CINT(i% * COS(k) + j% * COS(k))
+ang% = k * trig2 MOD 360
+HZDpset i%, j%, i% * cosine!(ang%) + j% * cosine!(ang%)
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .1) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model2
+SHARED sine!()
 stp = .1
 DO
 k = k + stp
 FOR i% = 0 TO 319
 FOR j% = 0 TO 199
-PSET (i%, j%), CINT(SIN(k) * i%)
+HZDpset i%, j%, sine!(k * trig2 MOD 360) * i%
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 254) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model3
+SHARED log1!()
 stp = .1
 DO
 k = k + stp
 FOR i% = 1 TO 319
 FOR j% = 1 TO 199
-PSET (i%, j%), CINT(LOG(i%) * k)
+HZDpset i%, j%, log1!(i%) * k
 NEXT
 NEXT
-IF (k > 30 OR k < .01) THEN stp = -stp
+HZDdisplayGraphics
+IF (k > 40 OR k < .01) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model4
+SHARED sine!(), cosine!()
 stp = .01
 l = 254
 DO
@@ -353,79 +387,97 @@ k = k + stp
 l = l - stp
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-PSET (i&, j&), CINT(SIN(k) * COS(l) * (i& * j& * .005))
+ang% = k * trig2 MOD 360
+HZDpset i&, j&, sine!(ang%) * cosine!(ang%) * (i& * j& * .005)
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 254) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model5
+SHARED log1!()
 stp = .1
 DO
 k = k + stp
 FOR i% = 1 TO 319
 FOR j% = 1 TO 199
-PSET (i%, j%), CINT(LOG(i%) * LOG(j%) * k)
+HZDpset i%, j%, log1!(i%) * log1!(j%) * k
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .01) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model6
+SHARED sine!(), cosine!()
 stp = .1
 DO
 k = k + stp
 FOR i% = 1 TO 319
 FOR j% = 1 TO 199
-PSET (i%, j%), CINT(i% * COS(k) + j% * SIN(k))
+ang% = k * trig2 MOD 360
+HZDpset i%, j%, i% * cosine!(ang%) + j% * sine!(ang%)
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .1) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model7
+SHARED sine!(), cosine!()
 stp = .1
 DO
 k = k + stp
 FOR i% = 1 TO 319
 FOR j% = 1 TO 199
-PSET (i%, j%), CINT(i% * COS(k) - j% * SIN(k))
+ang% = k * trig2 MOD 360
+HZDpset i%, j%, i% * cosine!(ang%) - j% * sine!(ang%)
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .1) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model8
+SHARED sine!(), cosine!()
 stp = .1
 DO
 k = k + stp
 FOR i% = 1 TO 319
 FOR j% = 1 TO 199
-PSET (i%, j%), CINT(i% * COS(k) + j% * SIN(k) * COS(k))
+ang% = k * trig2 MOD 360
+HZDpset i%, j%, i% * cosine!(ang%) + j% * sine!(ang%) * cosine!(ang%)
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .1) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB dsg.model9
+SHARED sine!(), cosine!(), log2!()
+logval3 = log2!(300)
 stp = .1
 DO
 k = k + stp
 FOR i% = 1 TO 319
 FOR j% = 1 TO 199
-PSET (i%, j%), CINT(i% * COS(k) * LOG(k) + j% * SIN(k) * LOG(k))
+ang% = k * trig2 MOD 360
+logvalue = log2!(k * 33.33333) + logval3
+HZDpset i%, j%, i% * cosine!(ang%) * logvalue + j% * sine!(ang%) * logvalue
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .1) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -435,169 +487,226 @@ SUB ima.model1
 DIM parx%(200), pary%(200)
 DO
 FOR i% = 0 TO UBOUND(parx%)
-PSET (parx%(i%), pary%(i%)), 0
+HZDpset parx%(i%), pary%(i%), 0
 parx%(i%) = parx%(i%) + RND(1) * 3 - 1
 pary%(i%) = pary%(i%) + RND(1)
-IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = CINT(RND(1) * 319)
+IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = RND(1) * 319
 IF (pary%(i%) < 1 OR pary%(i%) > 199) THEN pary%(i%) = 1
-PSET (parx%(i%), pary%(i%)), 100
+HZDpset parx%(i%), pary%(i%), 100
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
-WAIT &H3DA, 8
 LOOP
 END SUB
 
 SUB ima.model10
+SHARED sine!(), cosine!()
+trig3 = .01 * trig2
 DO
-WAIT &H3DA, 8
 k% = (k% + 1) MOD 256
 l% = (l% + 1) MOD 200
 m% = (m% + 1) MOD 320
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, 0, m% * COS(i% * .01), l% * COS(i% * .01), k% * SIN(i% * .01)
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, 0, m% * cosine!(ang%), l% * cosine!(ang%), k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, m% * SIN(i% * .01), 0, l% * SIN(i% * .01), 0
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, m% * sine!(ang%), 0, l% * sine!(ang%), 0
 NEXT
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, l% * COS(i% * .01), m% * COS(i% * .01), 0, k% * SIN(i% * .01)
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, l% * cosine!(ang%), m% * cosine!(ang%), 0, k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, l% * SIN(i% * .01), 0, m% * SIN(i% * .01), 0
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, l% * cosine!(ang%), 0, m% * SIN(ang%), 0
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model11
+SHARED sine!(), cosine!()
+trig3 = .01 * trig2
 DO
-WAIT &H3DA, 8
 k% = (k% + 1) MOD 256
 l% = (l% + 1) MOD 200
 m% = (m% + 1) MOD 320
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, 0, m% * COS(i% * .01), l% * COS(i% * .01), k% * SIN(i% * .01)
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, 0, m% * cosine!(ang%), l% * cosine!(ang%), k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, m% * SIN(i% * .01), 0, l% * SIN(i% * .01), k% * COS(i% * .01)
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, m% * sine!(ang%), 0, l% * sine!(ang%), k% * cosine!(ang%)
 NEXT
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, l% * COS(i% * .01), m% * COS(i% * .01), 0, 0
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, l% * cosine!(ang%), m% * cosine!(ang%), 0, 0
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, l% * SIN(i% * .01), 0, m% * SIN(i% * .01), 0
+ang% = i% * trig3 MOD 360
+support.bentline1 i%, l% * sine!(ang%), 0, m% * sine!(ang%), 0
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model12
+SHARED sine!(), cosine!()
 DO
 r% = (r% + 1) MOD 100
 FOR i = 0 TO 6.29 STEP .1
-support.bentline1 150, 100, 150 + r% * COS(i), 100 + r% * SIN(i), 255 * SIN(i)
+ang% = i * trig2 MOD 360
+support.bentline1 150, 100, 150 + r% * cosine!(ang%), 100 + r% * sine!(ang%), 255 * sine!(ang%)
 NEXT
-WAIT &H3DA, 8
 FOR i = 0 TO 12.89 STEP .17
-support.bentline1 150, 100, 150 + r% * COS(i), 100 + r% * SIN(i), 0
+ang% = i * trig2 MOD 360
+support.bentline1 150, 100, 150 + r% * cosine!(ang%), 100 + r% * sine!(ang%), 0
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model13
+SHARED sine!(), cosine!()
 DO
 r% = (r% + 11) MOD 100
 FOR i = 0 TO 6.29 STEP .05
-support.bentline1 150, 100, 150 + r% * COS(i), 100 + r% * SIN(i), 255 * SIN(i)
-WAIT &H3DA, 8
+ang% = i * trig2 MOD 360
+support.bentline1 150, 100, 150 + r% * cosine!(ang%), 100 + r% * sine!(ang%), 100 + 255 * i / 6.29
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 NEXT
 FOR i = 0 TO 6.29 STEP .05
-support.bentline1 150, 100, 150 + r% * COS(i), 100 + r% * SIN(i), 0
+ang% = i * trig2 MOD 360
+support.bentline1 150, 100, 150 + r% * cosine!(ang%), 100 + r% * sine!(ang%), 0
+HZDdisplayGraphics
+IF (INKEY$ <> "") THEN EXIT DO
 NEXT
+HZDdisplayGraphics
 LOOP
 END SUB
 
 SUB ima.model14
+SHARED sine!(), cosine!()
+RANDOMIZE TIMER
 DO
 r% = (r% + 11) MOD 100
 FOR i = 0 TO 6.29 STEP .05
-PSET (150 + RND(1) * 10 + r% * COS(i), RND(2) * 10 + 100 + r% * SIN(i)), 255 * SIN(i)
-PSET (150 + RND(1) + r% * COS(i), RND(2) + 100 + r% * SIN(i)), 0
+ang% = i * trig2 MOD 360
+xpnt% = 150 + r% * cosine!(ang%)
+ypnt% = 100 + r% * sine!(ang%)
+HZDpset RND * 10 + xpnt%, RND * 10 + ypnt%, r% + 255 * sine!(ang%)
+HZDpset RND + xpnt%, RND + ypnt%, 0
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model15
+SHARED sine!(), cosine!()
+RANDOMIZE TIMER
 DO
 r% = (r% + 11) MOD 100
 FOR i = 0 TO 6.29 STEP .05
-PSET (150 + RND(1) + r% * (COS(i) - SIN(r%)), RND(2) + 100 + r% * (SIN(i) + COS(r%))), 255 * SIN(i)
-PSET (150 + RND(1) + r% * (COS(i) - SIN(r%)), RND(2) + 100 + r% * (SIN(i) + COS(r%))), 0
+ang% = i * trig2 MOD 360
+road% = r% * trig2 MOD 360
+sub1% = 150 + r% * (cosine!(ang%) - sine!(road%))
+add1% = 100 + r% * (sine!(ang%) + cosine!(road%))
+HZDpset RND(1) + sub1%, RND(2) + add1%, 255 * sine!(ang%)
+HZDpset RND(1) + sub1%, RND(2) + add1%, 0
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model16
+SHARED sine!(), cosine!()
 DO
 r% = (r% + 1) MOD 100
 k = k + .01
 IF (k > 3000) THEN k = 0
 FOR i = 0 TO 6.29 STEP .05
-PSET (150 + r% * (COS(i) - COS(k)), 100 + r% * (SIN(i) + SIN(k))), 0' 255 * SIN(i)
-PSET (150 + r% * (COS(i) - SIN(k)), 100 + r% * (SIN(i) + COS(k))), 255 * COS(i)
+iang% = i * trig2 MOD 360
+kang% = k * trig2 MOD 360
+HZDpset 150 + r% * (cosine!(iang%) - cosine!(kang%)), 100 + r% * (sine!(iang%) + sine!(kang%)), 0' 255 * SIN(i)
+HZDpset 150 + r% * (cosine!(iang%) - sine!(kang%)), 100 + r% * (sine!(iang%) + cosine!(kang%)), 255 * cosine!(iang%)
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model17
+SHARED sine!(), cosine!(), tangent!()
 DO
-r% = (r% + 1) MOD 100
+r% = (r% + 1) MOD 50
 k = k + .01
 IF (k > 3000) THEN k = 0
 FOR i = 0 TO 6.29 STEP .05
-PSET (150 + r% * (TAN(i) - TAN(k)), 100 + r% * (TAN(i) + TAN(k))), 0' 255 * SIN(i)
-PSET (150 + r% * (COS(i) - TAN(k)), 100 + r% * (SIN(i) + TAN(k))), 255 * COS(i)
+iang% = i * trig2 MOD 360
+kang% = k * trig2 MOD 360
+HZDpset 150 + r% * (tangent!(iang%) - tangent!(kang%)), 100 + r% * (tangent!(iang%) + tangent!(kang%)), 0
+HZDpset 150 + r% * (cosine!(iang%) - tangent!(kang%)), 100 + r% * (sine!(iang%) + tangent!(kang%)), 255 * cosine!(iang%)
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model18
+SHARED sine!(), cosine!(), tangent!()
 DO
 c% = c% + 1
-r% = (r% + 1) MOD 500
+r% = (r% + 1) MOD 100
 IF (c% = 2000) THEN
-CLS
+HZDclearPage
 c% = 0
 END IF
 k = k + .01
 IF (k > 3000) THEN k = 0
 FOR i = 0 TO 6.29 STEP .05
-PSET (150 + r% * (COS(i) - TAN(k)), 50 + r% * (TAN(i) - COS(k))), 255 * COS(i)
-'PSET (150 + r% * (COS(i) - TAN(k)), 100 + r% * (SIN(i) + TAN(k))), 255 * COS(i)
+iang% = i * trig2 MOD 360
+kang% = k * trig2 MOD 360
+x& = (150 + r% * (cosine!(iang%) - tangent!(kang%)) / 2)
+y& = (50 + r% * (tangent!(iang%) - cosine!(kang%)) / 2)
+IF (x& > 1000 OR x& < -1000) THEN x% = 1000 ELSE x% = x&
+IF (y& > 1000 OR y& < -1000) THEN y% = 1000 ELSE y% = y&
+HZDpset x%, y%, 255 * cosine!(iang%)
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model19
+SHARED sine!(), cosine!(), tangent!()
 DO
 c% = c% + 1
 r% = (r% + 1) MOD 500
 IF (c% = 2000) THEN
-CLS
+HZDclearPage
 c% = 0
 END IF
 k = k + .01
 IF (k > 3000) THEN k = 0
 FOR i = 0 TO 6.29 STEP .05
-PSET (150 + r% * (COS(i) - TAN(k)), 100 + r% * (SIN(i) + TAN(k))), 255 * SIN(i)
+iang% = i * trig2 MOD 360
+kang% = k * trig2 MOD 360
+x& = 150 + r% * (cosine!(iang%) - tangent!(kang%))
+y& = 100 + r% * (sine!(iang%) + tangent!(kang%))
+IF (x& > 1000 OR x& < -1000) THEN x% = 1000 ELSE x% = x&
+IF (y& > 1000 OR y& < -1000) THEN y% = 1000 ELSE y% = y&
+HZDpset x%, y%, 255 * sine!(iang%)
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
@@ -606,27 +715,30 @@ SUB ima.model2
 DIM parx%(200), pary%(200)
 DO
 FOR i% = 0 TO UBOUND(parx%)
-PSET (parx%(i%), pary%(i%)), 0
+HZDpset parx%(i%), pary%(i%), 0
 parx%(i%) = parx%(i%) + RND(1) * 3 - 2
 pary%(i%) = pary%(i%) + RND(1) * 3 - 1
-IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = CINT(RND(1) * 319)
+IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = RND(1) * 319
 IF (pary%(i%) < 1 OR pary%(i%) > 199) THEN pary%(i%) = 1
-PSET (parx%(i%), pary%(i%)), 14
+HZDpset parx%(i%), pary%(i%), 180
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
-WAIT &H3DA, 8
 LOOP
 END SUB
 
 SUB ima.model20
+SHARED sine!(), cosine!()
+stp = .04
 DO
-k = k + .01
+k = k + stp
 FOR i% = 0 TO 319
 FOR j% = 0 TO 199
-a1& = i% * CLNG(j%)
-PSET (i% + RND(1), j% + RND(2)), (SIN(a1& * .0001) + COS(a1& * .0001)) * k * 10
+ang% = i% * .0001 * j% * trig2 MOD 360
+HZDpset i% + RND(1), j% + RND(2), (sine!(ang%) + cosine!(ang%)) * k * 10
 NEXT
 NEXT
+HZDdisplayGraphics
 IF (k > 200) THEN k = 0
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -640,17 +752,17 @@ a1% = parx%(i%)
 a2% = pary%(i%)
 parx%(i%) = parx%(i%) + RND(1) * 3 - 2
 pary%(i%) = pary%(i%) + RND(1) * 3 - 1
-IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = CINT(RND(1) * 319)
+IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = RND(1) * 319
 IF (pary%(i%) < 1 OR pary%(i%) > 199) THEN pary%(i%) = 1
-IF (POINT(parx%(i%), pary%(i%)) = 0) THEN PSET (a1%, a2%), 0
-PSET (parx%(i%), pary%(i%)), 13
-PSET (parx%(i%) - 1, pary%(i%)), 0
-PSET (parx%(i%) + 1, pary%(i%)), 0
-PSET (parx%(i%), pary%(i%) - 1), 0
-PSET (parx%(i%), pary%(i%) + 1), 0
+IF (HZDpoint(parx%(i%), pary%(i%)) = 0) THEN HZDpset a1%, a2%, 0
+HZDpset parx%(i%), pary%(i%), 64
+HZDpset parx%(i%) - 1, pary%(i%), 0
+HZDpset parx%(i%) + 1, pary%(i%), 0
+HZDpset parx%(i%), pary%(i%) - 1, 0
+HZDpset parx%(i%), pary%(i%) + 1, 0
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
-WAIT &H3DA, 8
 LOOP
 END SUB
 
@@ -662,39 +774,38 @@ a1% = parx%(i%)
 a2% = pary%(i%)
 parx%(i%) = parx%(i%) + RND(1) * 3 - 2
 pary%(i%) = pary%(i%) + RND(1) * 3 - 1
-IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = CINT(RND(1) * 319)
+IF (parx%(i%) < 1 OR parx%(i%) > 319) THEN parx%(i%) = RND(1) * 319
 IF (pary%(i%) < 1 OR pary%(i%) > 199) THEN pary%(i%) = 1
-IF (POINT(parx%(i%), pary%(i%)) = 0) THEN PSET (a1%, a2%), 0
-PSET (parx%(i%), pary%(i%)), 12
+IF (HZDpoint(parx%(i%), pary%(i%)) = 0) THEN HZDpset a1%, a2%, 0
+PSET (parx%(i%), pary%(i%)), 125
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
-WAIT &H3DA, 8
 LOOP
 END SUB
 
 SUB ima.model5
 DIM parx%(200), pary%(200)
+RANDOMIZE TIMER
+FOR i% = 0 TO UBOUND(parx%)
+parx%(i%) = 319 * RND
+NEXT
 DO
 FOR i% = 0 TO UBOUND(parx%)
 a1% = parx%(i%)
 a2% = pary%(i%)
-parx%(i%) = parx%(i%)' + RND(1) * 3 - 2
+HZDpset parx%(i%), pary%(i%), 0
 pary%(i%) = pary%(i%) + RND(1) * 4 - 1
-IF (POINT(parx%(i%), pary%(i%)) <> 0) THEN
-IF (POINT(parx%(i%), pary%(i%) + 1) <> 0) THEN
-DO UNTIL POINT(parx%(i%), 1) = 0
-parx%(i%) = CINT(RND(1) * 319)
-LOOP
-pary%(i%) = 1
-PSET (parx%(i%), pary%(i%)), 11
+a% = HZDpoint(parx%(i%), pary%(i%))
+HZDpset parx%(i%), pary%(i%), 199
+IF (a% = 199 OR a% = -1) THEN
+parx%(i%) = 319 * RND
+pary%(i%) = 0
+HZDpset a1%, a2%, 214
 END IF
-ELSE
-PSET (a1%, a2%), 0
-END IF
-PSET (parx%(i%), pary%(i%)), 11
 NEXT
 IF (INKEY$ <> "") THEN EXIT DO
-WAIT &H3DA, 8
+HZDdisplayGraphics
 LOOP
 END SUB
 
@@ -706,81 +817,96 @@ a1% = parx%(i%)
 a2% = pary%(i%)
 parx%(i%) = parx%(i%) + RND(1) * 3 - 2
 pary%(i%) = pary%(i%) + RND(1) * 4 - 1
-IF (POINT(parx%(i%), pary%(i%)) <> 0) THEN
-IF (POINT(parx%(i%), pary%(i%) + 1) <> 0) THEN
+IF (HZDpoint(parx%(i%), pary%(i%)) <> 0) THEN
+IF (HZDpoint(parx%(i%), pary%(i%) + 1) <> 0) THEN
 parx%(i%) = RND(1) * 320
 pary%(i%) = RND(1) * 1000
-PSET (parx%(i%), pary%(i%)), 11
+HZDpset parx%(i%), pary%(i%), 121
 END IF
 ELSE
-PSET (a1%, a2%), 0
+HZDpset a1%, a2%, 0
 END IF
-PSET (parx%(i%), pary%(i%)), 11
+HZDpset parx%(i%), pary%(i%), 121
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
-WAIT &H3DA, 8
 LOOP
 END SUB
 
 SUB ima.model7
+SHARED sine!(), cosine!()
 DO
-WAIT &H3DA, 8
 k% = (k% + 1) MOD 256
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, 0, 319, 199, k% * SIN(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, 0, 319, 199, k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, 0, 0, 199, k% * COS(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, 0, 0, 199, k% * cosine!(ang%)
 NEXT
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, 199, 319, 0, k% * SIN(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, 199, 319, 0, k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, 199, 0, 0, k% * COS(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, 199, 0, 0, k% * cosine!(ang%)
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model8
+SHARED sine!(), cosine!()
 DO
-WAIT &H3DA, 8
 k% = (k% + 1) MOD 256
 l% = (l% + 1) MOD 200
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, 0, 319, l% * COS(i% * .01), k% * SIN(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, 0, 319, l% * cosine!(ang%), k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, 0, 0, l% * SIN(i% * .01), k% * COS(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, 0, 0, l% * sine!(ang%), k% * cosine!(ang%)
 NEXT
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, l% * COS(i% * .01), 319, 0, k% * SIN(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, l% * cosine!(ang%), 319, 0, k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, l% * SIN(i% * .01), 0, 0, k% * COS(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, l% * sine!(ang%), 0, 0, k% * cosine!(ang%)
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB ima.model9
+SHARED sine!(), cosine!()
 DO
-WAIT &H3DA, 8
 k% = (k% + 1) MOD 256
 l% = (l% + 1) MOD 200
 m% = (m% + 1) MOD 320
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, 0, m% * COS(i% * .01), l% * COS(i% * .01), k% * SIN(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, 0, m% * cosine!(ang%), l% * cosine!(ang%), k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, m% * SIN(i% * .01), 0, l% * SIN(i% * .01), k% * COS(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, m% * sine!(ang%), 0, l% * sine!(ang%), k% * cosine!(ang%)
 NEXT
 FOR i% = 0 TO 320 STEP 5
-support.bentline1 i%, l% * COS(i% * .01), m% * COS(i% * .01), 0, k% * SIN(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, l% * cosine!(ang%), m% * cosine!(ang%), 0, k% * sine!(ang%)
 NEXT
 FOR i% = 320 TO 0 STEP -5
-support.bentline1 i%, l% * SIN(i% * .01), 0, m% * SIN(i% * .01), k% * COS(i% * .01)
+ang% = i% * .01 * trig2 MOD 360
+support.bentline1 i%, l% * sine!(ang%), 0, m% * sine!(ang%), k% * cosine!(ang%)
 NEXT
+HZDdisplayGraphics
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
@@ -793,6 +919,7 @@ k = k + stp
 FOR i& = 0 TO 319
 support.bentline1 1, 100, 1 + i& * SIN(k + 1), 100 + i& * SIN(k) * COS(k), SIN(k) * i&
 NEXT
+HZDdisplayGraphics
 IF (k > 3 OR k < -1) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -806,6 +933,7 @@ k = k + stp
 FOR i& = 0 TO 319
 support.bentline1 150, 100, 150 + i& * SIN(k), 100 + i& * COS(k), COS(k) * i&
 NEXT
+HZDdisplayGraphics
 IF (k > 100 OR k < -100) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -819,6 +947,7 @@ k = k + stp
 FOR i& = 0 TO 319
 support.bentline1 150, 100, 150 + i& * SIN(k), 100 + i& * SIN(k) * COS(k), SIN(k) * i&
 NEXT
+HZDdisplayGraphics
 IF (k > 100 OR k < .105) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -832,6 +961,7 @@ k = k + stp
 FOR i& = 0 TO 319
 support.bentline1 150, 100, 150 + i& * SIN(k), 100 + i& * COS(k) * LOG(k), LOG(k) * COS(k) * i&
 NEXT
+HZDdisplayGraphics
 IF (k > 100 OR k < .101) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -842,18 +972,19 @@ stp = .1
 k = k + stp
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-PSET (i&, j&), CINT(SIN(k) * COS(k) * (i& * j& * .005))
+HZDpset i&, j&, CINT(SIN(k) * COS(k) * (i& * j& * .005))
 NEXT
 NEXT
+HZDdisplayGraphics
 k = 0
 stp% = 1
 DO
 k = k + stp!
+WAIT &H3DA, 8
 OUT &H3C8, cl%
 OUT &H3C9, CINT(SIN(k) * 63)
 OUT &H3C9, CINT(COS(k) * 63)
 OUT &H3C9, CINT(LOG(k) * 63)
-WAIT &H3DA, 8
 cl% = cl% + stp%
 IF (cl% > 254 OR cl% < 1) THEN stp% = -stp%
 IF (k > 30 OR k < .1) THEN stp! = -stp!
@@ -866,12 +997,13 @@ stp = .1
 k! = k! + stp!
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-PSET (i&, j&), CINT(SIN(k!) * COS(k!) * (i& * j& * .005) * LOG(k!))
+HZDpset i&, j&, CINT(SIN(k!) * COS(k!) * (i& * j& * .005) * LOG(k!))
 NEXT
 NEXT
 k% = 1
 stp% = 1
 DO
+HZDdisplayGraphics
 FOR cl% = 0 TO 255
 k% = k% + stp%
 OUT &H3C8, cl%
@@ -880,31 +1012,31 @@ OUT &H3C9, CINT(COS(k%) * 63)
 OUT &H3C9, CINT(LOG(k%) * 63)
 IF (k% > 300 OR k% < 2) THEN stp% = -stp%
 NEXT
-WAIT &H3DA, 8
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
 
 SUB pal.model3
-stp = .1
-k = k + stp
+RANDOMIZE TIMER
+stp! = .23
+k = k + stp!
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-PSET (i&, j&), CINT(SIN(k) * COS(k) * (i& * j& * .005) * RND(1))
+HZDpset i&, j&, SIN(k) * COS(k) * (i& * j& * .005) * RND
 NEXT
 NEXT
 k = 0
 stp% = 1
 DO
 k = k + stp!
+HZDdisplayGraphics
 OUT &H3C8, cl%
-OUT &H3C9, CINT(SIN(k) * 63)
-OUT &H3C9, CINT(COS(k) * 63)
-OUT &H3C9, CINT(LOG(k) * 63)
-WAIT &H3DA, 8
+OUT &H3C9, SIN(k) * 63
+OUT &H3C9, COS(k) * 63
+OUT &H3C9, LOG(k) * 63
 cl% = cl% + stp%
 IF (cl% > 254 OR cl% < 1) THEN stp% = -stp%
-IF (k > 30 OR k < .1) THEN stp! = -stp!
+IF (k > 300 OR k < .1) THEN stp! = -stp!
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
@@ -914,18 +1046,18 @@ stp = .1
 k = k + stp
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-PSET (i&, j&), CINT(SIN(k) * COS(k) * (i& * j& * .005) * EXP(SQR(k)) * LOG(k * k))
+HZDpset CINT(i&), CINT(j&), CINT(SIN(k) * COS(k) * (i& * j& * .005) * EXP(SQR(k)) * LOG(k * k))
 NEXT
 NEXT
 k = 0
 stp% = 1
 DO
 k = k + stp!
+HZDdisplayGraphics
 OUT &H3C8, cl%
 OUT &H3C9, CINT(SIN(k) * 63)
 OUT &H3C9, CINT(COS(k) * 63)
 OUT &H3C9, CINT(LOG(k) * 63)
-WAIT &H3DA, 8
 cl% = cl% + stp%
 IF (cl% > 254 OR cl% < 1) THEN stp% = -stp%
 IF (k > 30 OR k < .1) THEN stp! = -stp!
@@ -938,18 +1070,18 @@ stp = .1
 k = k + stp
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-PSET (i&, j&), CINT(RND(1) * ((i& * j&) / 100))
+HZDpset CINT(i&), CINT(j&), CINT(RND(1) * ((i& * j&) / 100))
 NEXT
 NEXT
 k = 0
 stp% = 1
 DO
 k = k + stp!
+HZDdisplayGraphics
 OUT &H3C8, cl%
 OUT &H3C9, CINT(SIN(k) * 63)
 OUT &H3C9, CINT(COS(k) * 63)
 OUT &H3C9, CINT(LOG(k) * 63)
-WAIT &H3DA, 8
 cl% = cl% + stp%
 IF (cl% > 254 OR cl% < 1) THEN stp% = -stp%
 IF (k > 30 OR k < .1) THEN stp! = -stp!
@@ -962,18 +1094,18 @@ stp = .1
 k = k + stp
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-PSET (i&, j&), CINT(INT(.5 + RND(1)) * i&)
+HZDpset CINT(i&), CINT(j&), CINT(INT(.5 + RND(1)) * i&)
 NEXT
 NEXT
 k = 0
 stp% = 1
 DO
 k = k + stp!
+HZDdisplayGraphics
 OUT &H3C8, cl%
 OUT &H3C9, CINT(SIN(k) * 63)
 OUT &H3C9, CINT(COS(k) * 63)
 OUT &H3C9, CINT(LOG(k) * 63)
-WAIT &H3DA, 8
 cl% = cl% + stp%
 IF (cl% > 254 OR cl% < 1) THEN stp% = -stp%
 IF (k > 30 OR k < .1) THEN stp! = -stp!
@@ -997,14 +1129,17 @@ LOOP
 END SUB
 
 SUB sew.model10
+SHARED sine!(), cosine!()
 stp = .1
 k = .1
 DO
 k = k + stp
 FOR i& = 0 TO 319
-PSET (150 + i& * COS(k), 100 + i& * SIN(k) * COS(k)), ABS(COS(k) * i&)
-PSET (150 + i& * SIN(k), 100 + i& * COS(k)), ABS(COS(k) * i&)
+ang% = k * trig2 MOD 360
+HZDpset 150 + i& * cosine!(ang%), 100 + i& * sine!(ang%) * cosine!(ang%), ABS(cosine!(ang%) * i&)
+HZDpset 150 + i& * sine!(ang%), 100 + i& * cosine!(ang%), ABS(cosine!(ang%) * i&)
 NEXT
+HZDdisplayGraphics
 IF (k > 300 OR k < .2) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -1016,9 +1151,10 @@ k = .1
 DO
 k = k + stp
 FOR i& = 0 TO 319
-PSET (150 + i& * COS(k), 100 + i& * SIN(k)), ABS(COS(k) * i&)
-PSET (150 + i& * SIN(k), 100 + i& * COS(k)), ABS(COS(k) * i&)
+HZDpset 150 + i& * COS(k), 100 + i& * SIN(k), ABS(COS(k) * i&)
+HZDpset 150 + i& * SIN(k), 100 + i& * COS(k), ABS(COS(k) * i&)
 NEXT
+HZDdisplayGraphics
 IF (k > 300 OR k < .2) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -1030,9 +1166,10 @@ k = .1
 DO
 k = k + stp
 FOR i& = 0 TO 319
-PSET (150 + i& * COS(k) * LOG(k + 1), 100 + i& * SIN(k) * LOG(k + 1)), ABS(COS(k) * i&)
-PSET (150 + i& * SIN(k), 100 + i& * COS(k)), ABS(COS(k) * i&)
+HZDpset 150 + i& * COS(k) * LOG(k + 1), 100 + i& * SIN(k) * LOG(k + 1), ABS(COS(k) * i&)
+HZDpset 150 + i& * SIN(k), 100 + i& * COS(k), ABS(COS(k) * i&)
 NEXT
+HZDdisplayGraphics
 IF (k > 3000 OR k < .5) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -1044,9 +1181,10 @@ k = .1
 DO
 k = k + stp
 FOR i& = 0 TO 319
-PSET (150 + i& * COS(k) * LOG(k + 1), 100 + i& * SIN(k) * LOG(k + 1)), ABS(COS(k) * i&)
-PSET (150 + i& * SIN(k), 100 + i& * COS(k)), ABS(COS(k) * i&)
+HZDpset 150 + i& * COS(k) * LOG(k + 1), 100 + i& * SIN(k) * LOG(k + 1), ABS(COS(k) * i&)
+HZDpset 150 + i& * SIN(k), 100 + i& * COS(k), ABS(COS(k) * i&)
 NEXT
+HZDdisplayGraphics
 IF (k > 3000 OR k < .5) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -1058,9 +1196,14 @@ k = .1
 DO
 k = k + stp
 FOR i& = 0 TO 319
-PSET (150 + i& * COS(k) - TAN(k + 1) * i&, 100 + i& * SIN(k) - TAN(k + 1) * i&), ABS(COS(k) * i&)
-PSET (150 + i& * SIN(k) + COS(k) * i&, 100 + i& * COS(k) + SIN(k) * i&), ABS(COS(k) * i&)
+x& = 150 + i& * COS(k) - TAN(k + 1) * i&
+y& = 100 + i& * SIN(k) - TAN(k + 1) * i&
+IF (x& > 1000 OR x& < -1000) THEN x% = 1000 ELSE x% = x&
+IF (y& > 1000 OR y& < -1000) THEN y% = 1000 ELSE y% = y&
+HZDpset x%, y%, ABS(COS(k) * i&)
+HZDpset 150 + i& * SIN(k) + COS(k) * i&, 100 + i& * COS(k) + SIN(k) * i&, ABS(COS(k) * i&)
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .2) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -1072,9 +1215,14 @@ k = .1
 DO
 k = k + stp
 FOR i& = 0 TO 319
-PSET (150 + -TAN(k + 1) * i&, 100 + -TAN(k + 1) * i&), ABS(COS(k) * i&)
-PSET (150 + i& * SIN(k) + COS(k) * SIN(k) * i&, 100 + i& * COS(k) + SIN(k) * COS(k) * i&), ABS(COS(k) * i&)
+x& = 150 + -TAN(k + 1) * i&
+y& = 100 + -TAN(k + 1) * i&
+IF (x& > 1000 OR x& < -1000) THEN x% = 1000 ELSE x% = x&
+IF (y& > 1000 OR y& < -1000) THEN y% = 1000 ELSE y% = y&
+HZDpset x%, y%, ABS(COS(k) * i&)
+HZDpset 150 + i& * SIN(k) + COS(k) * SIN(k) * i&, 100 + i& * COS(k) + SIN(k) * COS(k) * i&, ABS(COS(k) * i&)
 NEXT
+HZDdisplayGraphics
 IF (k > 30 OR k < .2) THEN stp = -stp
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
@@ -1187,12 +1335,13 @@ LOOP
 END SUB
 
 SUB support.bentline1 (x1%, y1%, x2%, y2%, clr%)
+SHARED cosine!()
 IF (x2% - x1% <> 0) THEN
 y! = (y2% - y1%) / (x2% - x1%)
 cosstep! = -((11 / 7) / (x2% - x1%))
 cs! = 11 / 7
 FOR i% = x1% TO x2% STEP SGN(x2% - x1%)
-PSET (i%, y1% + COS(cs!) * yy!), clr%
+HZDpset i%, y1% + cosine!(cs! * trig2 MOD 360) * yy!, clr%
 cs! = cs! + cosstep!
 yy! = yy! + y!
 NEXT
@@ -1201,12 +1350,26 @@ y! = (x2% - x1%) / (y2% - y1%)
 cosstep! = -((11 / 7) / (y2% - y1%))
 cs! = 11 / 7
 FOR i% = y1% TO y2% STEP SGN(y2% - y1%)
-PSET (x1% + COS(cs!) * yy!, i%), clr%
+HZDpset x1% + cosine!(cs! * trig2 MOD 360) * yy!, i%, clr%
 cs! = cs! + cosstep!
 yy! = yy! + y!
 NEXT
 ELSE
-PSET (x1%, y1%), clr%
+HZDpset x1%, y1%, clr%
 END IF
+END SUB
+
+SUB support.setpalette
+reduc1 = .025
+reduc2 = 1.4
+FOR i% = 0 TO 255
+OUT &H3C8, i%
+r% = 63 * (EXP(-ABS(i% - 196) * reduc1) ^ reduc2)
+g% = 63 * (EXP(-ABS(i% - 128) * reduc1) ^ reduc2)
+b% = 63 * (EXP(-ABS(i% - 64) * reduc1) ^ reduc2)
+OUT &H3C9, r%
+OUT &H3C9, g%
+OUT &H3C9, b%
+NEXT
 END SUB
 
