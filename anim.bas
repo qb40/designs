@@ -59,6 +59,8 @@ DECLARE SUB ima.model20 ()
 
 DECLARE SUB support.setpalette ()
 DECLARE SUB support.bentline1 (x1%, y1%, x2%, y2%, clr%)
+DECLARE SUB support.waittime (time1%)
+
 
 'Declaring Keys
 CONST backspc = 8, enter = 13, htab = 9, esc = 27
@@ -70,6 +72,7 @@ CONST kf1 = 59, kf2 = 60, kf3 = 61, kf4 = 62, kf5 = 63, kf6 = 64, kf7 = 65, kf8 
 
 CONST pi = 22 / 7, pi2 = 2 * pi
 CONST trig = 100000, trig2 = 360 / pi2
+CONST stepadd = 1
 
 
 DIM sine!(359), cosine!(359), tangent!(359)
@@ -97,12 +100,20 @@ NEXT
 
 
 
-
-
 SCREEN 13
 HZDstart
+support.setpalette
+commandor% = ((ABS(VAL(COMMAND$)) - 1) MOD 56) + 1
+IF (commandor% <> 0) THEN
+Selection% = commandor% - 1
+GOTO commanduse
+END IF
+
+
 DO
 GOSUB men.menu
+
+commanduse:
 SELECT CASE Selection%
 CASE 0
 dsg.model1
@@ -218,7 +229,9 @@ CASE 55
 sew.model15
 CASE ELSE
 END SELECT
-LOOP
+LOOP WHILE commandor% = 0
+SYSTEM
+
 
 
 men.menu:
@@ -226,11 +239,11 @@ COLOR 64
 HZDclearPage
 HZDdisplayGraphics
 support.setpalette
-FOR i% = 0 TO 319 STEP 5
+FOR i% = 0 TO 319 STEP stepadd
 support.bentline1 i%, 40, i% * SIN(i% * .01), 40 + SIN(i% * .01) * 10, SIN(i% * .01) * 255
 NEXT
 HZDdisplayGraphics
-PRINT "Random Colour Fun"
+PRINT "   DESIGNS 3.0   "
 PRINT "================="
 LINE (0, 70)-(319, 70), 1, B
 LINE (0, 80)-(319, 80), 1, B
@@ -261,11 +274,13 @@ CASE CHR$(esc)
 CLS
 PRINT "Wasn't that crazy?"
 PRINT "I did it just for fun . . ."
-PRINT "Hope you don't feel bad"
-LOCATE 6, 1
-PRINT "Tried by: Subhajit Sahu(GamerZ)"
-PRINT "Mail: qbasic40@gmail.com"
-PRINT "Please mail me."
+PRINT "If you have some better designs"
+PRINT "then make sure to mail it to me."
+PRINT "I will love to get those."
+PRINT "Thanking You ..."
+LOCATE 10, 1
+PRINT "Tried by: Subhajit Sahu"
+PRINT "Mail: wolfram77@gmail.com"
 k$ = INPUT$(1)
 HZDstop
 SYSTEM
@@ -273,8 +288,7 @@ CASE CHR$(enter)
 LOCATE 10, 1
 COLOR 15
 PRINT Selection% + 1; " "; Names$(Selection%)
-FOR i = -10000 TO 10000 STEP .005
-NEXT
+support.waittime 60
 HZDclearPage
 CASE ELSE
 END SELECT
@@ -1017,12 +1031,11 @@ LOOP
 END SUB
 
 SUB pal.model3
-RANDOMIZE TIMER
-stp! = .23
-k = k + stp!
+stp = .1
+k = k + stp
 FOR i& = 0 TO 319
 FOR j& = 0 TO 199
-HZDpset i&, j&, SIN(k) * COS(k) * (i& * j& * .005) * RND
+HZDpset i&, j&, CINT(SIN(k) * COS(k) * (i& * j& * .005) * RND(1))
 NEXT
 NEXT
 k = 0
@@ -1031,12 +1044,12 @@ DO
 k = k + stp!
 HZDdisplayGraphics
 OUT &H3C8, cl%
-OUT &H3C9, SIN(k) * 63
-OUT &H3C9, COS(k) * 63
-OUT &H3C9, LOG(k) * 63
+OUT &H3C9, CINT(SIN(k) * 63)
+OUT &H3C9, CINT(COS(k) * 63)
+OUT &H3C9, CINT(LOG(k) * 63)
 cl% = cl% + stp%
 IF (cl% > 254 OR cl% < 1) THEN stp% = -stp%
-IF (k > 300 OR k < .1) THEN stp! = -stp!
+IF (k > 30 OR k < .1) THEN stp! = -stp!
 IF (INKEY$ <> "") THEN EXIT DO
 LOOP
 END SUB
@@ -1129,15 +1142,13 @@ LOOP
 END SUB
 
 SUB sew.model10
-SHARED sine!(), cosine!()
 stp = .1
 k = .1
 DO
 k = k + stp
 FOR i& = 0 TO 319
-ang% = k * trig2 MOD 360
-HZDpset 150 + i& * cosine!(ang%), 100 + i& * sine!(ang%) * cosine!(ang%), ABS(cosine!(ang%) * i&)
-HZDpset 150 + i& * sine!(ang%), 100 + i& * cosine!(ang%), ABS(cosine!(ang%) * i&)
+HZDpset 150 + i& * COS(k), 100 + i& * SIN(k) * COS(k), ABS(COS(k) * i&)
+HZDpset 150 + i& * SIN(k), 100 + i& * COS(k), ABS(COS(k) * i&)
 NEXT
 HZDdisplayGraphics
 IF (k > 300 OR k < .2) THEN stp = -stp
@@ -1370,6 +1381,15 @@ b% = 63 * (EXP(-ABS(i% - 64) * reduc1) ^ reduc2)
 OUT &H3C9, r%
 OUT &H3C9, g%
 OUT &H3C9, b%
+NEXT
+END SUB
+
+SUB support.waittime (time1%)
+FOR i% = 1 TO time1%
+DO WHILE (INP(&H3DA) AND 8)
+LOOP
+DO WHILE (INP(&H3DA) AND 8)
+LOOP
 NEXT
 END SUB
 
