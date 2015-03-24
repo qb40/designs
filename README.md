@@ -1,36 +1,58 @@
-###################################
-##         DESIGNS 3.0           ##
-###################################
+#qb-animation-store
 
-FREEWARE:
-This program is a freeware which means that you may
-copy it, distribute it by any means freely. The author
-is not responsible for any damage caused by the use
-of this program on any device. If however any one wants
-to change the contents of the program, please contact
-the author.
-
-USAGE:
-This program is quite simple to use. All one has to do
-is to select a design of one's choice and then he will
-get to see the design in motion. To select design Left
-/Right arrow keys are to be used, Enter key to select
-a design, any key to exit from the design, and Esc key
-to quit the program.
-Shell command may also be used. Ex-
-DESIGNS3   23
-The above command will display design no. 23 and when
-a key is pressed, it will directly exit from the program.
-
-CONTENTS:
-Readme.txt, Designs 3.bas, Designs 3.exe
-
-CONTACT:
-Developed by: Subhajit Sahu
-Mail Address: wolfram77@gmail.com
-
-**********************************
+**qb-animation-store** is a dos program that demonstrates 50 different graphics animations.
+It was developed by combining various mathematical formulae is various (random) ways. Observing
+that interesting animations can be produced in such ways, this application was developed. This
+is a demo and can be used as an insipartion as to what kinds of art can be performed with Math.
 
 
+##demo
 
-END
+<img src="/assets/img/0.png" width="70%"><br/>
+<img src="/assets/img/1.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/2.png" width="70%"><br/>
+<img src="/assets/img/3.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/4.png" width="70%"><br/>
+<img src="/assets/img/5.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/6.png" width="70%"><br/>
+<img src="/assets/img/7.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/8.png" width="70%"><br/>
+<img src="/assets/img/9.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/10.png" width="70%"><br/>
+<img src="/assets/img/11.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/12.png" width="70%"><br/>
+<img src="/assets/img/13.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/14.png" width="70%"><br/>
+<img src="/assets/img/15.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/16.png" width="70%"><br/>
+<img src="/assets/img/17.png" width="70%"><br/>
+<br/><br/>
+
+
+<img src="/assets/img/18.png" width="70%"><br/>
+<img src="/assets/img/19.png" width="70%"><br/>
+<br/><br/>
