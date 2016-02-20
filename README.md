@@ -8,51 +8,51 @@ is a demo and can be used as an insipartion as to what kinds of art can be perfo
 
 ##demo
 
-<img src="/assets/img/0.png" width="70%"><br/>
-<img src="/assets/img/1.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/0.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/1.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/2.png" width="70%"><br/>
-<img src="/assets/img/3.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/2.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/3.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/4.png" width="70%"><br/>
-<img src="/assets/img/5.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/4.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/5.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/6.png" width="70%"><br/>
-<img src="/assets/img/7.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/6.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/7.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/8.png" width="70%"><br/>
-<img src="/assets/img/9.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/8.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/9.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/10.png" width="70%"><br/>
-<img src="/assets/img/11.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/10.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/11.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/12.png" width="70%"><br/>
-<img src="/assets/img/13.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/12.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/13.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/14.png" width="70%"><br/>
-<img src="/assets/img/15.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/14.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/15.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/16.png" width="70%"><br/>
-<img src="/assets/img/17.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/16.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/17.png" width="70%"><br/>
 <br/><br/>
 
 
-<img src="/assets/img/18.png" width="70%"><br/>
-<img src="/assets/img/19.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/18.png" width="70%"><br/>
+<img src="https://raw.githubusercontent.com/wolfram77/qb-animation-store/gh-pages/0/image/19.png" width="70%"><br/>
 <br/><br/>
