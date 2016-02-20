@@ -1,0 +1,84 @@
+<!-- INDEX - main web page -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<!-- meta info -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<!-- cdn css and js -->
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Permanent+Marker" type="text/css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gorditas" type="text/css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/cosmo/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<!-- local css and js -->
+<link rel="stylesheet" href="../0/style/github-markdown.css">
+<link rel="stylesheet" href="../0/style/v86.css">
+<link rel="stylesheet" href="../0/style/web.css">
+<script src="../0/script/marked.min.js"></script>
+<script src="../0/script/v86_all.js"></script>
+<script src="../0/script/web.js"></script>
+<!-- Page icon and title -->
+<link rel="icon" href="../favicon.ico">
+<title>stone paper scissor : dos archive : wolfram77</title>
+</head>
+
+
+<!-- ui part -->
+<body>
+<!-- fixed header -->
+<header>
+<nav class="navbar navbar-default navbar-fixed">
+	<!-- header -->
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="../">stone-paper-scissor</a>
+	</div>
+	<!-- menu -->
+	<div id="navbar" class="navbar-collapse collapse">
+		<!-- left -->
+		<ul class="nav navbar-nav">
+			<li><a id="repo-run"><i class="fa fa-play-circle fa-lg"></i> run</a></li>
+			<li><a href="https://github.com/wolfram77/qb-stone-paper-scissor"><i class="fa fa-github fa-lg"></i> code</a></li>
+		</ul>
+	</div>
+</nav>
+</header>
+
+
+<!-- main content -->
+<div id="main">
+
+<!-- games -->
+<section id="main-games">
+<div id="repo" class="jumbotron" value="wolfram77/qb-stone-paper-scissor">
+<h3 class="text-center"><span id="repo-name"></span> : <span id="repo-description"></span></h3>
+<p class="text-center">Type "run stone-paper-scissor" to start when the emulator is ready.</p>
+<div class="container">
+<div id="dos-screen" style="display: none;">
+	<div id="screen"></div>
+	<canvas id="vga"></canvas>
+</div>
+</div>
+</div>
+<div class="jumbotron">
+<div class="container">
+<div id="repo-readme" class="markdown-body"></div>
+</div>
+</div>
+</section>
+
+</div>
+
+<!-- sticky footer -->
+<footer>
+</footer>
+
+</body>
+
+</html>
