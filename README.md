@@ -1,10 +1,9 @@
-**animationstore** is a dos program that demonstrates 50 different graphics animations.
+**animationstore** is a DOS program that demonstrates 50 different graphics animations.
 It was developed by combining various mathematical formulae is various (random) ways. Observing
 that interesting animations can be produced in such ways, this application was developed. This
 is a demo and can be used as an insipartion as to what kinds of art can be performed with Math.
 
-
-##demo
+<br>
 
 <img src="https://raw.githubusercontent.com/qb40/animationstore/gh-pages/0/image/0.png" width="70%"><br/>
 <img src="https://raw.githubusercontent.com/qb40/animationstore/gh-pages/0/image/1.png" width="70%"><br/>
